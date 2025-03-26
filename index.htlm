@@ -1,10 +1,21 @@
+Customizable line height
+The default line height has been increased for improved accessibility. You can choose to enable a more compact line height from the view settings menu.
+‎index.htlm
++153-46
+Original file line number	Diff line number	Diff line change
+@@ -1,60 +1,167 @@
 <!DOCTYPE html>
+<html lang="pt">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Contrato de Água</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <title>Water Service Contract - Lisbon Metropolitan Area</title>
     <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
+        label, input, select, button { display: block; margin-bottom: 10px; width: 100%; }
         body {
             font-family: Arial, sans-serif;
             max-width: 800px;
@@ -62,16 +73,32 @@
     </style>
 </head>
 <body>
+    <h2>Iniciar Contrato de Água</h2>
+    <form id="formContrato">
+        <label for="cidade">Selecione a Cidade:</label>
+        <select id="cidade" required>
+            <option value="Lisboa">Lisboa (EPAL)</option>
+            <option value="Oeiras">Oeiras (SMAS Oeiras)</option>
+            <option value="Cascais">Cascais (Águas de Cascais)</option>
+        </select>        
+        <label for="nome">Nome Completo:</label>
+        <input type="text" id="nome" required>     
+        <label for="morada">Morada:</label>
+        <input type="text" id="morada" required>        
+        <label for="nif">NIF:</label>
+        <input type="text" id="nif" required>
     <div class="form-container">
         <h1>Water Service Contract Application</h1>
         <p>Please fill out the form to request water service in the Lisbon Metropolitan Area (Lisboa, Cascais, Oeiras).</p>
-        
-        <form id="waterContractForm" action="https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT" method="POST">
+        <label for="iban">IBAN:</label>
+        <input type="text" id="iban" required>
+        <button type="button" onclick="gerarPDF()">Gerar Contrato em PDF</button>
+    </form>
+            <form id="waterContractForm" action="https://formspree.io/f/YOUR_FORMSPREE_ENDPOINT" method="POST">
             <div class="form-group">
                 <label for="fullName">Full Name *</label>
                 <input type="text" id="fullName" name="fullName" required>
             </div>
-
             <div class="form-group--inline">
                 <div class="form-group" style="flex: 2;">
                     <label for="email">Email Address *</label>
@@ -82,7 +109,6 @@
                     <input type="tel" id="phone" name="phone" required>
                 </div>
             </div>
-
             <div class="form-group">
                 <label for="municipality">Municipality *</label>
                 <select id="municipality" name="municipality" required>
@@ -92,12 +118,10 @@
                     <option value="Oeiras">Oeiras</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label for="address">Property Address *</label>
                 <input type="text" id="address" name="address" required>
             </div>
-
             <div class="form-group--inline">
                 <div class="form-group">
                     <label for="postalCode">Postal Code *</label>
@@ -113,38 +137,48 @@
                     </select>
                 </div>
             </div>
-
             <div class="form-group">
                 <label for="moveInDate">Desired Water Service Start Date *</label>
                 <input type="date" id="moveInDate" name="moveInDate" required>
             </div>
-
             <div class="form-group">
                 <label for="additionalInfo">Additional Information or Special Requirements</label>
                 <textarea id="additionalInfo" name="additionalInfo" rows="4"></textarea>
             </div>
-
             <div class="form-group">
                 <label>
                     <input type="checkbox" name="termsAccepted" required>
                     I accept the terms and conditions and privacy policy *
                 </label>
             </div>
-
             <button type="submit" class="submit-btn">Submit Water Service Request</button>
         </form>
-
         <p class="info-text">
             * Required fields. After submission, our team will contact you to complete the water service contract process.
             Processing times may vary. Documents like passport/ID and proof of address might be required.
         </p>
     </div>
-
     <script>
+        function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const cidade = document.getElementById('cidade').value;
+            const nome = document.getElementById('nome').value;
+            const morada = document.getElementById('morada').value;
+            const nif = document.getElementById('nif').value;
+            const iban = document.getElementById('iban').value;
         const form = document.getElementById('waterContractForm');
         form.addEventListener('submit', function(event) {
             event.preventDefault();
-            
+            doc.text("Contrato de Fornecimento de Água", 20, 20);
+            doc.text(`Cidade: ${cidade}`, 20, 40);
+            doc.text(`Nome: ${nome}`, 20, 50);
+            doc.text(`Morada: ${morada}`, 20, 60);
+            doc.text(`NIF: ${nif}`, 20, 70);
+            doc.text(`IBAN: ${iban}`, 20, 80);
+            doc.save(`Contrato_${cidade}.pdf`);
+        }
             fetch(form.action, {
                 method: 'POST',
                 body: new FormData(form),
