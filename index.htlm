@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Contrato de Água</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; }
+        label, input, select, button { display: block; margin-bottom: 10px; width: 100%; }
+    </style>
+</head>
+<body>
+    <h2>Iniciar Contrato de Água</h2>
+    <form id="formContrato">
+        <label for="cidade">Selecione a Cidade:</label>
+        <select id="cidade" required>
+            <option value="Lisboa">Lisboa (EPAL)</option>
+            <option value="Oeiras">Oeiras (SMAS Oeiras)</option>
+            <option value="Cascais">Cascais (Águas de Cascais)</option>
+        </select>
+        
+        <label for="nome">Nome Completo:</label>
+        <input type="text" id="nome" required>
+        
+        <label for="morada">Morada:</label>
+        <input type="text" id="morada" required>
+        
+        <label for="nif">NIF:</label>
+        <input type="text" id="nif" required>
+        
+        <label for="iban">IBAN:</label>
+        <input type="text" id="iban" required>
+        
+        <button type="button" onclick="gerarPDF()">Gerar Contrato em PDF</button>
+    </form>
+    
+    <script>
+        function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const cidade = document.getElementById('cidade').value;
+            const nome = document.getElementById('nome').value;
+            const morada = document.getElementById('morada').value;
+            const nif = document.getElementById('nif').value;
+            const iban = document.getElementById('iban').value;
+            
+            doc.text("Contrato de Fornecimento de Água", 20, 20);
+            doc.text(`Cidade: ${cidade}`, 20, 40);
+            doc.text(`Nome: ${nome}`, 20, 50);
+            doc.text(`Morada: ${morada}`, 20, 60);
+            doc.text(`NIF: ${nif}`, 20, 70);
+            doc.text(`IBAN: ${iban}`, 20, 80);
+            
+            doc.save(`Contrato_${cidade}.pdf`);
+        }
+    </script>
+</body>
+</html>
